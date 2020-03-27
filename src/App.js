@@ -7,6 +7,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
 import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
+import Snackbar from "@material-ui/core/Snackbar";
 
 const useStyles = makeStyles(theme => ({
   header: {
@@ -39,6 +40,7 @@ function App() {
   const [subjectList, setSubjectList] = useState([]);
   const [selected, setSelected] = useState([]);
   const tableDiv = useRef();
+  const [open, setOpen] = useState(false);
 
   window.mqfMapData.init(
     function() {
@@ -148,8 +150,9 @@ function App() {
     selectableRowsOnClick: true,
     disableToolbarSelect: true,
     rowsSelected: selected,
-    responsive: "stacked",
+    responsive: "scrollFullHeight",
     viewColumns: false,
+    rowsPerPageOptions: [10, 50, 100],
     onTableChange: (action, tableState) => {
       if (action === "rowsSelect") {
         onSelectSubjects(tableState.selectedRows.data, tableState.data);
@@ -178,6 +181,16 @@ function App() {
       },
       "*"
     );
+
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
   };
 
   return (
@@ -203,6 +216,14 @@ function App() {
           </div>
         )}
       </Scrollbars>
+
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={open}
+        autoHideDuration={1000}
+        onClose={handleClose}
+        message="Success!"
+      ></Snackbar>
     </>
   );
 }
